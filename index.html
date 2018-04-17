@@ -18,9 +18,10 @@
     if (!window.location.hash)
         alert('You must provide a world to load the webpage from!');
     else {
-	PlayerIO.useSecureApiRequests = true;
+        PlayerIO.useSecureApiRequests = true;
         PlayerIO.authenticate("everybody-edits-su9rn58o40itdbnw69plyw", "simpleUsers", { username: "guest", password: "guest" }, {}, client => {
             client.bigDB.load("config", "config", config => {
+                client.multiplayer.useSecureConnections = true;
                 client.multiplayer.createJoinRoom(world_id, "Everybodyedits" + config.version, true, null, null, connection => {
                     conn = connection;
                     connection.addMessageCallback("*", on_message);
