@@ -48,7 +48,7 @@
             document.getElementById('content').innerHTML += sign.args[1];
         });
 
-        conn.Disconnect();
+        conn.disconnect();
     }
 
     function callback_error(error) { console.log("error: " + error.code + ": " + error.message); }
