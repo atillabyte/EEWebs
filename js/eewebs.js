@@ -22,6 +22,8 @@
         if (e.type != "init")
             return;
 
+        conn.disconnect();
+
         let bldatam = jsparse(e);
         let signs = bldatam.filter(block => block.id == 385)
                            .sort(function(a, b) { return a.x > b.x ? 1 : 0; })
@@ -43,8 +45,6 @@
         iframe.contentWindow.document.open();
         iframe.contentWindow.document.write(html);
         iframe.contentWindow.document.close();
-
-        conn.disconnect();
     }
 
     function callback_error(error) { console.log("error: " + error.code + ": " + error.message); }
