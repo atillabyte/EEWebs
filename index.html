@@ -44,9 +44,13 @@
                                 return a.y > b.y ? 1 : 0;
                             });
 
+        let html_complete = "";
+
         signs.forEach(sign => {
-            document.getElementById('content').innerHTML += sign.args[1];
+            html_complete += sign.args[1];
         });
+
+        document.getElementById('content').innerHTML += html_complete;
 
         conn.disconnect();
     }
