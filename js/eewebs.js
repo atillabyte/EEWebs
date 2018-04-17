@@ -27,13 +27,23 @@
                            .sort(function(a, b) { return a.x > b.x ? 1 : 0; })
                            .sort(function(a, b) { return a.y > b.y ? 1 : 0; });
 
-        let html_complete = "";
+        let html = '';
 
         signs.forEach(sign => {
-            html_complete += sign.args[1];
+            html += sign.args[1];
         });
 
-        document.getElementById('content').innerHTML += html_complete;
+        let iframe = document.createElement('iframe');
+
+        iframe.width = '100%';
+        iframe.height = '100%';
+        iframe.frameBorder = '0';
+
+        document.body.getElementsByTagName('div')[0].appendChild(iframe);
+        iframe.contentWindow.document.open();
+        iframe.contentWindow.document.write(html);
+        iframe.contentWindow.document.close();
+
         conn.disconnect();
     }
 
