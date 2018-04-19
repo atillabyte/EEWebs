@@ -8,9 +8,9 @@ for (var i = 0; i < button.length; i++) {
         effect.className = 'effect';
         effect.style.top = y + 'px';
         effect.style.left = x + 'px';
-        e.srcElement.appendChild(effect);
+        e.target.appendChild(effect);
         setTimeout(function () {
-            e.srcElement.removeChild(effect);
+            e.target.removeChild(effect);
         }, 1100);
     }
 }
