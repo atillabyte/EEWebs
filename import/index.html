@@ -51,7 +51,7 @@
         let minify = require('html-minifier').minify;
         let editor = ace.edit("editor");
         let current_connection = null;
-        let ms_per_block = 128;
+        let ms_per_block = 32;
         let minify_options = {
             removeAttributeQuotes: true,
             removeComments: true,
@@ -100,7 +100,7 @@
                     client.multiplayer.createJoinRoom(roomId, "Everybodyedits" + config.version, true, null, null, connection => {
                         current_connection = connection;
                         connection.addMessageCallback("init", e => {
-                            let width = e.getInt(18);
+                            let width = e.getInt(18) * 2;
                             let blocks = [];
 
                             for (var i = 0; i < signs.length; i++) {
