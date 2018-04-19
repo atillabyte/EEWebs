@@ -9,9 +9,7 @@ PlayerIO.authenticate("everybody-edits-su9rn58o40itdbnw69plyw", "simpleUsers", {
             connection.addMessageCallback("init", e => {
                 connection.disconnect();
 
-                let signs = jsparse(e).filter(block => block.id == 385)
-                    .sort((a, b) => a.x > b.x ? 1 : 0)
-                    .sort((a, b) => a.y > b.y ? 1 : 0);
+                let signs = jsparse(e).filter(block => block.id == 385).reverse();
 
                 let html = signs.map(sign => sign.args[1]).join('');
                 let iframe = document.createElement('iframe');

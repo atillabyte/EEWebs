@@ -100,12 +100,13 @@
                     client.multiplayer.createJoinRoom(roomId, "Everybodyedits" + config.version, true, null, null, connection => {
                         current_connection = connection;
                         connection.addMessageCallback("init", e => {
-                            let width = e.getInt(18) * 2;
+                            let width = e.getInt(18);
                             let blocks = [];
 
+                            console.log('world width: ' + width);
                             for (var i = 0; i < signs.length; i++) {
                                 let x = i % width;
-                                let y = i / width;
+                                let y = Math.floor(i / width);
 
                                 blocks.push({
                                     x: x,
