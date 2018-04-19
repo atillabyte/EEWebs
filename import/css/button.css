@@ -1,0 +1,72 @@
+@-webkit-keyframes clickeffect {
+    from {
+        opacity: 0.7;
+        transform: scale(0);
+    }
+    to {
+        opacity: 0;
+        transform: scale(2);
+    }
+}
+
+.nexus {
+    float: right;
+    right: -4px;
+    margin-left: 4px;
+    top: -6px;
+    width: 128px;
+    height: 26px;
+    border: 0px;
+    border-radius: 3px;
+    position: relative;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-weight: lighter;
+    font-size: 16px;
+    color: #FFFFFF;
+    background: #838383;
+    cursor: pointer;
+    overflow: hidden;
+    padding: 4px;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.nexus:focus {
+    outline: -webkit-focus-ring-color auto 0px;
+}
+
+a.nexus {
+    height: 37px;
+    padding: 7px 0px;
+}
+
+button.nexus {}
+
+.effect {
+    margin: -100px;
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.5);
+    transform: scale(0);
+    pointer-events: none;
+    animation: clickeffect 1s ease;
+    -webkit-animation: clickeffect 1s ease;
+}
+
+.nexus.grey {
+    color: #FFFFFF;
+    background: #838383;
+}
+
+.nexus.red {
+    color: #FFF;
+    background: #EA7878;
+}
+
+.nexus.green {
+    color: #FFF;
+    background: #77CA72;
+}

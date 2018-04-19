@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Everybody Edits Webs Importer</title>
+    <link rel="stylesheet" type="text/css" href="css/button.css">
+    <link rel="stylesheet" type="text/css" href="css/input.css">
+    <link rel="stylesheet" type="text/css" href="css/editor.css">
+    <link rel="stylesheet" type="text/css" href="css/checkbox.css">
+
+    <style type="text/css" media="screen">
+        body {
+            background-color: #d0d0d0;
+        }
+    </style>
+</head>
+
+<body>
+    <span style="float: left; color:#323232;">Everybody Edits Webs Page Import Tool</span>
+    <span style="float: left; color:#404040; font-style:italic; margin-top:4px; margin-left:6px; font-size:8pt;">(version: 2018-04-18)</span>
+    <button id="btn-upload" class="nexus grey">Upload</button>
+    <button id="btn-beautify" class="nexus green">Beautify</button>
+    <button id="btn-minify" class="nexus green">Minify</button>
+
+    <div class="field">
+        <input class="field__input one-column-form__input--text" id="input-roomid" type="roomid" placeholder="World ID">
+    </div>
+
+    <div class="field">
+        <input class="field__input one-column-form__input--text" id="input-password" type="password" placeholder="Password">
+    </div>
+
+    <div class="field">
+        <input class="field__input one-column-form__input--text" id="input-email" type="email" placeholder="Email address">
+    </div>
+
+    <label class="label--checkbox">
+        <input id="cb-auto-minify" type="checkbox" class="checkbox" checked> Automatically Minify</input>
+    </label>
+
+    <div id="editor"></div>
+
+    <script src="https://cdn.rawgit.com/atillabyte/PlayerIO-JS/1087d85b/PlayerIOClient.minified.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-minifier/3.5.15/htmlminifier.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ace.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="js/timer.js"></script>
+    <script src="js/input.js"></script>
+
+    <script>
+        let minify = require('html-minifier').minify;
+        let editor = ace.edit("editor");
+        let current_connection = null;
+        let ms_per_block = 128;
+        let minify_options = {
+            removeAttributeQuotes: true,
+            removeComments: true,
+            minifyCSS: true,
+            removeOptionalTags: true,
+            preserveLineBreaks: false,
+            collapseWhitespace: true,
+            conservativeCollapse: false
+        };
+
+        editor.session.setMode("ace/mode/html");
+        editor.setShowPrintMargin(false);
+
+        // default value
+        editor.getSession().setValue("<span>hello world</span>");
+
+        $('#btn-minify').on('click', function () {
+            editor.getSession().setValue(minify(editor.getSession().getValue(), minify_options));
+        });
+
+        $('#btn-upload').on('click', function () {
+            if (current_connection != null)
+                current_connection.disconnect();
+
+            upload(
+                $('#input-email').val(),
+                $('#input-password').val(),
+                $('#input-roomid').val()
+            );
+        });
+
+        function upload(email, password, roomId) {
+            let value = editor.getSession().getValue();
+
+            if ($('#cb-auto-minify').is(':checked')) {
+                value = minify(value, minify_options);
+            }
+
+            let signs = value.match(/.{1,140}/g); // 140 is max sign length
+            let queue = new TimedQueue();
+
+            PlayerIO.useSecureApiRequests = true;
+            PlayerIO.authenticate("everybody-edits-su9rn58o40itdbnw69plyw", "simpleUsers", { email: email, password: password }, {}, client => {
+                client.bigDB.load("config", "config", config => {
+                    client.multiplayer.useSecureConnections = true;
+                    client.multiplayer.createJoinRoom(roomId, "Everybodyedits" + config.version, true, null, null, connection => {
+                        current_connection = connection;
+                        connection.addMessageCallback("init", e => {
+                            let width = e.getInt(18);
+                            let blocks = [];
+
+                            for (var i = 0; i < signs.length; i++) {
+                                let x = i % width;
+                                let y = i / width;
+
+                                blocks.push({
+                                    x: x,
+                                    y: y,
+                                    text: signs[i]
+                                });
+                            }
+
+                            blocks.forEach(sign => {
+                                queue.addTask({
+                                    callback: function () {
+                                        console.log(`sending sign at ${sign.x} ${sign.y}...`);
+                                        connection.send("b", 0, sign.x, sign.y, 385, sign.text, 0);
+                                    }, time: ms_per_block
+                                });
+                            });
+
+                            queue.start();
+                        });
+
+                        connection.send("init");
+                    }, callback_error);
+                }, callback_error);
+            }, callback_error);
+        }
+
+        function callback_error(error) { console.log("error: " + error.code + ": " + error.message); }
+    </script>
+
+    <script src="js/button.js"></script>
+</body>
+
+</html>
