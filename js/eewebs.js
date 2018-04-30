@@ -2,7 +2,7 @@ if (!window.location.hash)
   throw new function AlertError() { alert("You must provide a world to load the webpage from!"); }
 
 PlayerIO.useSecureApiRequests = true;
-PlayerIO.authenticate("everybody-edits-su9rn58o40itdbnw69plyw", "simpleUsers", { email: "eewebs@invalid.tld", password: "shared" }, {}, client => {
+PlayerIO.authenticate("everybody-edits-su9rn58o40itdbnw69plyw", "simpleUsers", { email: "EEWebs@email.tld", password: "shared" }, {}, client => {
   client.bigDB.load("config", "config", config => {
     client.multiplayer.useSecureConnections = true;
     client.multiplayer.createJoinRoom(window.location.hash.substr(1), "Everybodyedits" + config.version, true, null, null, connection => {
